@@ -88,6 +88,16 @@ function toggleEmojis() {
     }
 }
 
+function channelElement(info, mess){
+    this.name = info, 
+    this.createdOn = new Date(2017, 01, 02), 
+    this.createdBy = currentLocation.what3words, 
+    this.starred = true, 
+    this.expiresIn = 15, 
+    this.messageCount = 0,  
+    this.messages = [mess]
+}
+
 /**
  * #8 This #constructor function creates a new chat #message.
  * @param text `String` a message text
@@ -198,6 +208,8 @@ function createChannelElement(channelObject) {
      */
 
     // create a channel
+     
+    
     var channel = $('<li>').text(channelObject.name);
 
     // create and append channel meta
@@ -213,6 +225,7 @@ function createChannelElement(channelObject) {
 
     // The chevron
     $('<i>').addClass('fa').addClass('fa-chevron-right').appendTo(meta);
+    
 
     // return the complete channel
     return channel;
@@ -245,11 +258,12 @@ function newChannel(){
    $('#chat h1').append('<input type="text" placeholder="Enter a #channelName" id="channelinput"></input>');
    $('#chat h1').append('<button onclick="abort();" class="buttonPrimary ABORT" id="abortit">x  ABORT</button>');
    $('#sending').hide(); 
-   $('#chat-bar').append('<button class="buttonAccent" id="newChan">CREATE</button>'); 
+   $('#chat-bar').append('<button class="buttonAccent" id="newChan" onclick="createChan()">CREATE</button>'); 
    
 }
 
 function abort(){
+  currentChannel = prevChannel; 
   $('#abortit').hide();
   $('#newChan').detach();
   $('#sending').show();
@@ -258,10 +272,17 @@ function abort(){
 }
 
 function createChan(){
+  var x = $('#channelinput').val();
+  var y = $('#message').val(); 
+  if (x.length > 0 && y.length > 0 && x.charAt(0) === '#'){
+  currentChannel = new channelElement(x, y);
+  createChannelElement(currentChannel); 
   $('#abortit').hide();
   $('#newChan').detach();
   $('#sending').show();
   $('#channelinput').hide();
-  $('#chat h1').append(prevChannel.name + '<small>&nbspby</small>' + '<strong>&nbsp'  + prevChannel.createdBy + '</strong>');
+  $('#chat h1').append(currentChannel.name + '<small>&nbspby</small>' + '<strong>&nbsp'  + currentChannel.createdBy + '</strong>');
+  sendMessage(); 
+  }
 }
 
